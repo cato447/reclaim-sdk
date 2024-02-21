@@ -7,7 +7,7 @@ from reclaim_sdk.exceptions import RecordNotFound, InvalidRecord
 from typing import Optional
 
 
-CONF_FILE = pathlib.Path("~/.reclaim.toml").expanduser()
+CONF_FILE = pathlib.Path(".reclaim.toml").expanduser()
 
 
 class ReclaimClient(Client):
