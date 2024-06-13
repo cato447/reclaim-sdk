@@ -25,6 +25,14 @@ class ReclaimTaskEvent(ReclaimModel):
         return self._data.get("eventId", None)
 
     @property
+    def name(self):
+        return self._data
+
+    @name.setter
+    def name(self, value):
+        raise NotImplementedError("Task name cannot be changed in its event")
+
+    @property
     def start(self) -> datetime:
         return to_datetime(self["start"])
 
