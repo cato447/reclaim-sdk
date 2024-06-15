@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from reclaim_sdk.client import ReclaimAPICall
 from reclaim_sdk.models.model import ReclaimModel
@@ -16,9 +16,8 @@ class ReclaimTaskEvent(ReclaimModel):
     _required_fields = ["start", "end"]
     _endpoint = "/api/planner/event/move"
 
-    def __init__(self, data: dict, task, **kwargs) -> None:
+    def __init__(self, data: dict, **kwargs) -> None:
         super().__init__(data, **kwargs)
-        self.task = task
 
     @property
     def id(self):
@@ -26,7 +25,7 @@ class ReclaimTaskEvent(ReclaimModel):
 
     @property
     def name(self):
-        return self._data
+        return self["title"]
 
     @name.setter
     def name(self, value):
@@ -47,6 +46,27 @@ class ReclaimTaskEvent(ReclaimModel):
     @end.setter
     def end(self, value: datetime):
         self._data["end"] = from_datetime(value)
+
+    @classmethod
+    def search(
+        cls,
+        start: date = datetime.now().date(),
+        end: date = datetime.now().date() + timedelta(days=1),
+        **kwargs,
+    ):
+        params = {}
+        params.update({"sourceDetails": True, "allConnected": True})
+        params.update({"start": start, "end": end})
+        with ReclaimAPICall(cls) as client:
+            res = client.get("/api/events", params=params)
+            res.raise_for_status()
+
+        results = []
+
+        for item in res.json():
+            results.append(cls(data=item))
+
+        return results
 
     def _create(self, **kwargs):
         """
