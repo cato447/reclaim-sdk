@@ -80,7 +80,7 @@ class ReclaimTask(ReclaimModel):
         return to_datetime(self["created"])
 
     @property
-    def due_date(self) -> datetime:
+    def due_date(self) -> None | datetime:
         """
         Gets the due date of the task and returns it as a datetime object.
         The timezone is UTC.
@@ -101,7 +101,7 @@ class ReclaimTask(ReclaimModel):
             self["due"] = from_datetime(value)
 
     @property
-    def start_date(self) -> datetime:
+    def start_date(self) -> None | datetime:
         """
         Gets the not before date of the task and returns it as a datetime object.
         The timezone is UTC.
@@ -121,7 +121,7 @@ class ReclaimTask(ReclaimModel):
         else:
             self["snoozeUntil"] = from_datetime(value)
 
-    def _convert_to_timechunks(self, hours: int) -> int:
+    def _convert_to_timechunks(self, hours: float) -> int:
         """
         Converts the hours to time chunks and returns the number of
         time chunks rounded up.
@@ -129,7 +129,7 @@ class ReclaimTask(ReclaimModel):
         return round((hours * 60) / 15)
 
     @property
-    def min_work_duration(self) -> int:
+    def min_work_duration(self) -> None | int:
         """
         Gets the minimum duration of the task working chunks in hours.
         """
@@ -147,7 +147,7 @@ class ReclaimTask(ReclaimModel):
         self["minChunkSize"] = self._convert_to_timechunks(hours)
 
     @property
-    def max_work_duration(self) -> int:
+    def max_work_duration(self) -> None | int:
         """
         Gets the maximum duration of the task working chunks in hours.
         One working chunk is 15 minutes, so 4 working chunks are 1 hour.
@@ -166,7 +166,7 @@ class ReclaimTask(ReclaimModel):
         self["maxChunkSize"] = self._convert_to_timechunks(hours)
 
     @property
-    def duration(self) -> int:
+    def duration(self) -> None | int:
         """
         Gets the duration of the task in hours.
         """
@@ -206,14 +206,14 @@ class ReclaimTask(ReclaimModel):
 
         events = []
         for event in self["instances"]:
-            events.append(ReclaimTaskEvent(event, self))
+            events.append(ReclaimTaskEvent(event))
 
         events = sorted(events, key=lambda x: x.start)
 
         return events
 
     @property
-    def scheduled_start_date(self) -> datetime:
+    def scheduled_start_date(self) -> None | datetime:
         """
         Gets the scheduled start date of the task and returns it as a datetime
         object. The scheduled start date describes the date when the task is
@@ -226,7 +226,7 @@ class ReclaimTask(ReclaimModel):
         return self.events[0].start
 
     @property
-    def scheduled_end_date(self) -> datetime:
+    def scheduled_end_date(self) -> None | datetime:
         """
         Gets the scheduled end date of the task and returns it as a datetime
         object. The scheduled end date describes the date when the task is
