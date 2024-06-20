@@ -33,19 +33,19 @@ class ReclaimTaskEvent(ReclaimModel):
 
     @property
     def start(self) -> datetime:
-        return to_datetime(self["start"])
+        return to_datetime(self["eventStart"])
 
     @start.setter
     def start(self, value: datetime):
-        self._data["start"] = from_datetime(value)
+        self["eventStart"] = from_datetime(value)
 
     @property
     def end(self) -> datetime:
-        return to_datetime(self["end"])
+        return to_datetime(self["eventEnd"])
 
     @end.setter
     def end(self, value: datetime):
-        self._data["end"] = from_datetime(value)
+        self["eventEnd"] = from_datetime(value)
 
     @classmethod
     def search(
